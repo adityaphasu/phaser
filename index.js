@@ -42,8 +42,9 @@ const states = {
       foxGirl.anims.play("walk-left", true);
     },
     onUpdate() {
-      if (!cursors.left.isDown) return "idle";
       foxGirl.x -= speed;
+      if (cursors.shift.isDown) return "run-left";
+      if (!cursors.left.isDown) return "idle";
       return "walk-left";
     },
     onExit() {},
@@ -53,8 +54,9 @@ const states = {
       foxGirl.anims.play("walk-right", true);
     },
     onUpdate() {
-      if (!cursors.right.isDown) return "idle";
       foxGirl.x += speed;
+      if (cursors.shift.isDown) return "run-right";
+      if (!cursors.right.isDown) return "idle";
       return "walk-right";
     },
     onExit() {},
@@ -64,8 +66,9 @@ const states = {
       foxGirl.anims.play("walk-down", true);
     },
     onUpdate() {
-      if (!cursors.down.isDown) return "idle";
       foxGirl.y += speed;
+      if (cursors.shift.isDown) return "run-down";
+      if (!cursors.down.isDown) return "idle";
       return "walk-down";
     },
     onExit() {},
@@ -75,8 +78,9 @@ const states = {
       foxGirl.anims.play("walk-up", true);
     },
     onUpdate() {
-      if (!cursors.up.isDown) return "idle";
       foxGirl.y -= speed;
+      if (cursors.shift.isDown) return "run-up";
+      if (!cursors.up.isDown) return "idle";
       return "walk-up";
     },
     onExit() {},
@@ -86,8 +90,9 @@ const states = {
       foxGirl.anims.play("walk-left", true);
     },
     onUpdate() {
-      if (!cursors.left.isDown || !cursors.shift.isDown) return "idle";
       foxGirl.x -= speed + 3;
+      if (!cursors.left.isDown) return "idle";
+      if (cursors.shift.isDown) return "walk-left";
       return "run-left";
     },
     onExit() {},
@@ -97,8 +102,9 @@ const states = {
       foxGirl.anims.play("walk-right", true);
     },
     onUpdate() {
-      if (!cursors.right.isDown || !cursors.shift.isDown) return "idle";
       foxGirl.x += speed + 3;
+      if (!cursors.right.isDown) return "idle";
+      if (!cursors.shift.isDown) return "walk-right";
       return "run-right";
     },
     onExit() {},
@@ -108,8 +114,9 @@ const states = {
       foxGirl.anims.play("walk-up", true);
     },
     onUpdate() {
-      if (!cursors.up.isDown || !cursors.shift.isDown) return "idle";
       foxGirl.y -= speed + 3;
+      if (!cursors.up.isDown) return "idle";
+      if (!cursors.shift.isDown) return "walk-up";
       return "run-up";
     },
     onExit() {},
@@ -119,8 +126,9 @@ const states = {
       foxGirl.anims.play("walk-down", true);
     },
     onUpdate() {
-      if (!cursors.down.isDown || !cursors.shift.isDown) return "idle";
       foxGirl.y += speed + 3;
+      if (!cursors.down.isDown) return "idle";
+      if (!cursors.shift.isDown) return "walk-down";
       return "run-down";
     },
     onExit() {},
@@ -174,7 +182,7 @@ function update() {
   const nextState = states[currentState].onUpdate();
   if (nextState !== currentState) {
     states[currentState].onExit();
-    states[nextState].onEnter();
     currentState = nextState;
+    states[nextState].onEnter();
   }
 }
