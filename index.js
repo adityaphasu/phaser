@@ -5,8 +5,8 @@ let currentState;
 
 const config = {
   type: Phaser.AUTO,
-  width: 1200,
-  height: 500,
+  width: window.innerWidth,
+  height: window.innerHeight,
   backgroundColor: "#002fa7",
   scene: {
     preload: preload,
@@ -140,10 +140,16 @@ function preload() {
     frameWidth: 120,
     frameHeight: 120,
   });
+  this.load.image("sky", "assets/sky.png");
 }
 
 function create() {
-  foxGirl = this.add.sprite(400, 300, "foxGirl");
+  const width = this.sys.game.config.width;
+  const height = this.sys.game.config.height;
+  sky = this.add.tileSprite(0, 0, width, height, "sky").setOrigin(0, 0);
+  sky.setDisplaySize(width, height);
+
+  foxGirl = this.add.sprite(width / 2, height / 2, "foxGirl");
   cursors = this.input.keyboard.createCursorKeys();
 
   this.anims.create({
@@ -176,13 +182,30 @@ function create() {
 
   currentState = "idle";
   states[currentState].onEnter();
+
+  currentState = "idle";
+  states[currentState].onEnter();
 }
 
 function update() {
+  let prevX = foxGirl.x;
+  let prevY = foxGirl.y;
+
   const nextState = states[currentState].onUpdate();
   if (nextState !== currentState) {
     states[currentState].onExit();
     currentState = nextState;
     states[nextState].onEnter();
   }
+
+  const width = foxGirl.scene.sys.game.config.width;
+  const height = foxGirl.scene.sys.game.config.height;
+  const halfW = foxGirl.width / 2;
+  const halfH = foxGirl.height / 2;
+  foxGirl.x = Phaser.Math.Clamp(foxGirl.x, halfW, width - halfW);
+  foxGirl.y = Phaser.Math.Clamp(foxGirl.y, halfH, height - halfH);
+
+  const bgScrollFactor = 0.2;
+  sky.tilePositionX += (foxGirl.x - prevX) * bgScrollFactor;
+  sky.tilePositionY += (foxGirl.y - prevY) * bgScrollFactor;
 }
